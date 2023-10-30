@@ -32,6 +32,9 @@ public class GerenciamentoVotacao implements GerenciamentoVotacaoInterface {
     this.pessoasEleitoras.add(pessoaEleitora);
   }
 
+  /**
+   * Metodo de cadastrar pessoa candidata.
+   */
   public void cadastrarPessoaCandidata(String nome, int numero) {
     for (PessoaCandidata candidata : pessoasCandidatas) {
       if (candidata.getNumero() == numero) {
@@ -42,4 +45,44 @@ public class GerenciamentoVotacao implements GerenciamentoVotacaoInterface {
     this.pessoasCandidatas.add(pessoaCandidata);
   }
 
+  @Override
+  public void mostrarResultado() {
+    int totalVotos = cpfsComputados.size();
+    if (totalVotos == 0) {
+      System.out.println("É preciso ter pelo menos um voto para mostrar o resultado.");
+      return;
+    } else {
+      for (PessoaCandidata candidata : pessoasCandidatas) {
+        int votosCandidata = candidata.getVotos();
+        double percentualVotos = (votosCandidata * 100) / totalVotos;
+        System.out.println("Nome: " + candidata.getNome() + " - "
+            + votosCandidata + " votos ( " + Math.round(percentualVotos) + "% )");
+      }
+      System.out.println("Total de votos: " + totalVotos);
+    }
+  }
+
+  @Override
+  public void votar(String cpfPessoaEleitora, int numeroPessoaCandidata) {
+    if (cpfsComputados.contains(cpfPessoaEleitora)) {
+      System.out.println("Pessoa eleitora já votou!");
+      return;
+    }
+
+    // PessoaCandidata candidataVotada = null;
+    for (PessoaCandidata candidata : pessoasCandidatas) {
+      if (candidata.getNumero() == numeroPessoaCandidata) {
+        candidata.receberVoto();
+        cpfsComputados.add(cpfPessoaEleitora);
+        return;
+      }
+    }
+
+    // if (candidataVotada != null) {
+    //   candidataVotada.receberVoto();
+    //   cpfsComputados.add(cpfPessoaEleitora);
+    // } else {
+    //   System.out.println("Número de pessoa candidata não encontrado!");
+    // }
+  }
 }
